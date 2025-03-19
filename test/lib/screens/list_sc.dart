@@ -20,7 +20,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TODOリスト'),
+        title: Text('kzkzlist'),
       ),
       body: ListView.builder(
         itemCount: _todoItems.length,

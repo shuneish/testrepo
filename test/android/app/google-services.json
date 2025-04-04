@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "411201713180",
+    "project_id": "shunei-awa-658c7",
+    "storage_bucket": "shunei-awa-658c7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411201713180:android:18cff192225ef1268f1bd9",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG5JlKADtVnoeP5Ygl12qxIZ5BiTYy1VA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

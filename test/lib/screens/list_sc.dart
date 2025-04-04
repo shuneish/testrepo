@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/todo_item.dart';
 import '../dialogs/add_list.dart';
+import '../models/task_rep.dart';
+import '../models/task.dart';
 
 class TodoListScreen extends StatefulWidget {
   @override
@@ -8,13 +10,7 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  final List<String> _todoItems = [];
-
-  void _addTodoItem(String task) {
-    setState(() {
-      _todoItems.add(task);
-    });
-  }
+  final TaskRepository _taskRepository = TaskRepository(); // Firestore リポジトリ
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +18,37 @@ class _TodoListScreenState extends State<TodoListScreen> {
       appBar: AppBar(
         title: Text('kzkzlist'),
       ),
-      body: ListView.builder(
-        itemCount: _todoItems.length,
-        itemBuilder: (context, index) {
-          return TodoItem(text: _todoItems[index]);
+      body: StreamBuilder<List<Task>>(
+        stream: _taskRepository.getTasks(), // Firestore のタスク一覧を取得
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No tasks yet.'));
+          }
+
+          final tasks = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: tasks.length, // Firestore のデータに基づく
+            itemBuilder: (context, index) {
+              return TodoItem(
+                task: tasks[index], // Firestore のデータを渡す
+                onDelete: () async {
+                  await _taskRepository.deleteTask(tasks[index].id); // Firestore から削除
+                },
+              );
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await showAddTodoDialog(context);
           if (result != null && result['task'] != null && result['task']!.isNotEmpty) {
-            _addTodoItem(result['task']!);
+            await _taskRepository.addTask(result['task']!); // Firestore に追加
+            // StreamBuilder が自動で更新されるので setState は不要
           }
         },
         tooltip: 'Add Task',
